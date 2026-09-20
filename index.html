@@ -1,0 +1,203 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>بيتزا حدائق القدس | الطلب أونلاين</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0f1115;
+      --card-bg: #181b20;
+      --gold: #d4af37;
+      --gold-light: #f5d77f;
+      --gold-dark: #aa820a;
+      --text-main: #ffffff;
+      --text-muted: #a0a5b1;
+      --border-color: rgba(212, 175, 55, 0.25);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
+    body { background-color: var(--bg-dark); color: var(--text-main); padding-bottom: 160px; }
+    header { text-align: center; padding: 35px 20px 20px; background: radial-gradient(circle at center, #242933 0%, var(--bg-dark) 100%); border-bottom: 1px solid var(--border-color); }
+    header h1 { font-size: 2rem; color: var(--gold-light); margin-bottom: 5px; font-weight: 900; letter-spacing: 1px; }
+    header p { color: var(--text-muted); font-size: 0.95rem; }
+    .container { max-width: 900px; margin: 0 auto; padding: 15px; }
+    .section-title { font-size: 1.4rem; color: var(--gold); border-right: 4px solid var(--gold); padding-right: 10px; margin: 25px 0 15px; display: flex; align-items: center; gap: 8px; }
+    .items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+    .item-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s, border-color 0.2s; }
+    .item-card:hover { transform: translateY(-2px); border-color: var(--gold); }
+    .item-header { margin-bottom: 10px; }
+    .item-name { font-size: 1.1rem; font-weight: 700; color: #fff; }
+    .item-sub { font-size: 0.8rem; color: var(--text-muted); direction: ltr; text-align: right; }
+    .options-group { display: flex; gap: 8px; margin-top: 10px; }
+    .btn-add { background: linear-gradient(135deg, var(--gold), var(--gold-dark)); color: #111; border: none; padding: 10px 8px; border-radius: 8px; font-weight: 700; font-size: 0.88rem; cursor: pointer; flex: 1; display: flex; align-items: center; justify-content: center; gap: 4px; }
+    .btn-add:active { transform: scale(0.97); }
+    
+    /* شريط السلة مرفوع فوق شريط tiiny.host */
+    .cart-bar { 
+      position: fixed; 
+      bottom: 62px; 
+      left: 0; 
+      right: 0; 
+      background: #14171d; 
+      border-top: 2px solid var(--gold); 
+      padding: 12px 16px; 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      box-shadow: 0 -8px 25px rgba(0,0,0,0.85); 
+      z-index: 99999; 
+    }
+    .cart-info { display: flex; flex-direction: column; }
+    .cart-total { font-size: 1.25rem; font-weight: 800; color: var(--gold-light); }
+    .cart-count { font-size: 0.8rem; color: var(--text-muted); }
+    .btn-checkout { background: #25d366; color: #fff; border: none; padding: 11px 20px; border-radius: 10px; font-weight: 700; font-size: 1rem; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 12px rgba(37,211,102,0.4); }
+    .btn-checkout:disabled { background: #444; color: #888; cursor: not-allowed; box-shadow: none; }
+    
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 100000; align-items: center; justify-content: center; padding: 15px; }
+    .modal-content { background: #1c2027; border: 1px solid var(--border-color); border-radius: 16px; width: 100%; max-width: 460px; padding: 22px; max-height: 85vh; overflow-y: auto; }
+    .modal h3 { color: var(--gold-light); margin-bottom: 15px; font-size: 1.25rem; }
+    .cart-items-list { list-style: none; margin-bottom: 15px; max-height: 180px; overflow-y: auto; border-bottom: 1px solid #2e3440; padding-bottom: 10px; }
+    .cart-item-row { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; font-size: 0.95rem; }
+    .cart-item-row button { background: #ff4757; color: #fff; border: none; border-radius: 4px; padding: 2px 7px; cursor: pointer; font-size: 0.8rem; margin-right: 8px; }
+    .form-group { margin-bottom: 12px; text-align: right; }
+    .form-group label { display: block; margin-bottom: 4px; font-size: 0.85rem; color: var(--text-muted); }
+    .form-group input, .form-group textarea { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #333a46; background: #121418; color: #fff; outline: none; font-size: 0.95rem; }
+    .form-group input:focus, .form-group textarea:focus { border-color: var(--gold); }
+    .modal-actions { display: flex; gap: 10px; margin-top: 15px; }
+    .btn-cancel { flex: 1; background: #333a46; color: #fff; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+    .btn-confirm { flex: 2; background: #25d366; color: #fff; border: none; padding: 10px; border-radius: 8px; font-weight: 700; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>بيتزا حدائق القدس</h1>
+    <p>طعم أصيل.. جودة لا تُنسى</p>
+  </header>
+  <div class="container">
+    <h2 class="section-title">مناقيش</h2>
+    <div class="items-grid" id="manakishGrid"></div>
+    <h2 class="section-title">بيتزا</h2>
+    <div class="items-grid" id="pizzaGrid"></div>
+  </div>
+  <div class="cart-bar">
+    <div class="cart-info">
+      <span class="cart-total" id="cartTotalText">0.000 د.أ</span>
+      <span class="cart-count" id="cartCountText">0 أصناف مختارة</span>
+    </div>
+    <button class="btn-checkout" id="btnOpenModal" onclick="openOrderModal()" disabled>إتمام الطلب 🛒</button>
+  </div>
+  <div class="modal" id="orderModal">
+    <div class="modal-content">
+      <h3>مراجعة تفاصيل الطلب</h3>
+      <ul class="cart-items-list" id="cartItemsList"></ul>
+      <div class="form-group">
+        <label>الاسم الكريم:</label>
+        <input type="text" id="customerName" placeholder="مثال: أحمد">
+      </div>
+      <div class="form-group">
+        <label>العنوان / نوع الطلب:</label>
+        <input type="text" id="customerAddress" placeholder="استلام من المحل أو توصيل إلى...">
+      </div>
+      <div class="form-group">
+        <label>ملاحظات إضافية (اختياري):</label>
+        <textarea id="orderNotes" rows="2" placeholder="ملاحظات العجينة، الإضافات..."></textarea>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeOrderModal()">رجوع</button>
+        <button class="btn-confirm" onclick="sendToWhatsApp()">إرسال عبر واتساب 💬</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    const RESTAURANT_PHONE = "962771530075";
+    const manakishItems = [
+      { name: "منقوشة مكس اجبان", price: 1.750 },
+      { name: "منقوشة جبنة حلوم", price: 1.750 },
+      { name: "منقوشة جبنة بيضاء", price: 1.250 },
+      { name: "منقوشة زعتر وجبنة", price: 1.000 },
+      { name: "منقوشة محمره", price: 0.750 },
+      { name: "منقوشة زعتر", price: 0.500 }
+    ];
+    const pizzaItems = [
+      { name: "بيتزا مارغريتا", sub: "Margeritta Pizza", small: 2.000, med: 4.000 },
+      { name: "بيتزا خضار", sub: "Veggie Pizza", small: 4.000, med: 4.000 },
+      { name: "بيتزا ببروني", sub: "Pepperoni Pizza", small: 4.000, med: 4.000 },
+      { name: "بيتزا سلامي", sub: "Salami Pizza", small: 4.000, med: 4.000 },
+      { name: "بيتزا هوت دوغ", sub: "Hot Dog Pizza", small: 4.000, med: 4.000 },
+      { name: "بيتزا تيركي", sub: "Turkey Pizza", small: 4.000, med: 2.000 },
+      { name: "بيتزا الفريدو", sub: "Chicken Alfredo Pizza", small: 5.000, med: 2.500 },
+      { name: "بيتزا باربيكيو", sub: "BBQ Chicken Pizza", small: 5.000, med: 2.500 },
+      { name: "بيتزا زنجر", sub: "Zinger Pizza", small: 5.000, med: 2.500 },
+      { name: "بيتزا سوبر سوبريم", sub: "Super Supreme Pizza", small: 5.000, med: 2.500 }
+    ];
+    let cart = [];
+    function renderManakish() {
+      document.getElementById('manakishGrid').innerHTML = manakishItems.map(item => `
+        <div class="item-card">
+          <div class="item-header"><div class="item-name">${item.name}</div></div>
+          <button class="btn-add" onclick="addToCart('${item.name}', ${item.price})">إضافة (${item.price.toFixed(3)} د.أ) +</button>
+        </div>
+      `).join('');
+    }
+    function renderPizza() {
+      document.getElementById('pizzaGrid').innerHTML = pizzaItems.map(item => `
+        <div class="item-card">
+          <div class="item-header"><div class="item-name">${item.name}</div><div class="item-sub">${item.sub}</div></div>
+          <div class="options-group">
+            <button class="btn-add" onclick="addToCart('${item.name} (صغير)', ${item.small})">صغير: ${item.small.toFixed(3)}</button>
+            <button class="btn-add" onclick="addToCart('${item.name} (وسط)', ${item.med})">وسط: ${item.med.toFixed(3)}</button>
+          </div>
+        </div>
+      `).join('');
+    }
+    function addToCart(title, price) { 
+      cart.push({ title, price }); 
+      updateCartBar(); 
+    }
+    function removeFromCart(index) { 
+      cart.splice(index, 1); 
+      updateCartBar(); 
+      renderModalItems(); 
+      if (cart.length === 0) closeOrderModal(); 
+    }
+    function updateCartBar() {
+      const total = cart.reduce((sum, i) => sum + i.price, 0);
+      document.getElementById('cartTotalText').innerText = `${total.toFixed(3)} د.أ`;
+      document.getElementById('cartCountText').innerText = `${cart.length} أصناف مختارة`;
+      document.getElementById('btnOpenModal').disabled = cart.length === 0;
+    }
+    function openOrderModal() { 
+      renderModalItems(); 
+      document.getElementById('orderModal').style.display = 'flex'; 
+    }
+    function closeOrderModal() { 
+      document.getElementById('orderModal').style.display = 'none'; 
+    }
+    function renderModalItems() {
+      document.getElementById('cartItemsList').innerHTML = cart.map((item, i) => `
+        <li class="cart-item-row"><span>${item.title}</span><div><strong>${item.price.toFixed(3)} د.أ</strong><button onclick="removeFromCart(${i})">✕</button></div></li>
+      `).join('');
+    }
+    function sendToWhatsApp() {
+      const name = document.getElementById('customerName').value.trim() || 'زبون';
+      const address = document.getElementById('customerAddress').value.trim() || 'غير محدد';
+      const notes = document.getElementById('orderNotes').value.trim();
+      const counts = {};
+      cart.forEach(item => { counts[item.title] = (counts[item.title] || 0) + 1; });
+      let itemsText = "";
+      for (const [title, count] of Object.entries(counts)) { itemsText += `▫️ ${title} × ${count}\n`; }
+      const total = cart.reduce((sum, i) => sum + i.price, 0);
+      let message = `*طلب جديد من الموقع - بيتزا حدائق القدس* 🍕\n-------------------------\n👤 *الاسم:* ${name}\n📍 *العنوان / الاستلام:* ${address}\n-------------------------\n📋 *تفاصيل الطلب:*
+${itemsText}-------------------------\n💰 *المجموع النهائي:* ${total.toFixed(3)} د.أ\n`;
+      if (notes) { message += `📝 *ملاحظات:* ${notes}\n`; }
+      window.open(`https://wa.me/${RESTAURANT_PHONE}?text=${encodeURIComponent(message)}`, '_blank');
+    }
+    renderManakish();
+    renderPizza();
+  </script>
+</body>
+</html>
